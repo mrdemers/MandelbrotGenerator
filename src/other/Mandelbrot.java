@@ -18,6 +18,7 @@ public class Mandelbrot extends JFrame implements KeyListener{
 	public static int height = 1080/2;
 	MandelbrotPanel panel;
 	ComponentListener listener;
+	boolean mandelbrot = true;
 	
 	public Mandelbrot() {
 		super("Mandelbrot viewer");
@@ -26,7 +27,8 @@ public class Mandelbrot extends JFrame implements KeyListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.white);
 		addKeyListener(this);
-		panel = new MandelbrotPanel(width, height, true);
+		panel = new MandelbrotPanel(width, height, mandelbrot);
+		panel.generateImage();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		listener = new ComponentListener() {
 
@@ -45,6 +47,12 @@ public class Mandelbrot extends JFrame implements KeyListener{
 			@Override
 			public void componentResized(ComponentEvent e) {
 				int w, h;
+				int oldw = width;
+				int oldh = height;
+				double xMaxOld = panel.xMax;
+				double xMinOld = panel.xMin;
+				double yMaxOld = panel.yMax;
+				double yMinOld = panel.yMin;
 				w = e.getComponent().getWidth();
 				h = e.getComponent().getHeight();
 				if (w == width && h == height) {
@@ -53,11 +61,15 @@ public class Mandelbrot extends JFrame implements KeyListener{
 				width = w;
 				height = h;
 				System.out.println("Width " + w + " Height " + h);
-//				getContentPane().remove(panel);
-				panel.resize(w, h);
-//				panel = new MandelbrotPanel(w, h, true);
-//				getContentPane().add(panel);
-//				System.out.println("HI");
+				getContentPane().remove(panel);
+				panel = new MandelbrotPanel(w, h, mandelbrot);
+				panel.xMin = xMinOld;
+				panel.yMin = yMinOld;
+				panel.xMax = xMaxOld + (width-oldw)*((xMaxOld-xMinOld)/(float)oldw);
+				panel.yMax = yMaxOld + (height-oldh)*((yMaxOld-yMinOld)/(float)oldh);
+				panel.generateImage();
+				getContentPane().add(panel);
+				System.out.println("HI");
 			}
 
 			@Override

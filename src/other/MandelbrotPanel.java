@@ -68,19 +68,6 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 		color1 = new Color(200, 0, 0);
 		color2 = new Color(0, 0, 0);
 		color3 = new Color(0,0,0);
-		generateImage();
-	}
-	
-	public void resize(int width, int height) {
-		int oldw = this.width;
-		int oldh = this.height;
-		this.width = width;
-		this.height = height;
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		pixels = new int[width * height];
-		iters = new double[width * height];
-		xMax += (width-oldw)/(float)width;
-		System.out.println(xMax);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -121,8 +108,8 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				
-				double a = xMin + x * (xMax - xMin) / width;
-				double b = yMin + y * (yMax - yMin) / height;
+				double a = xMin + x * Math.abs(xMax - xMin) / width;
+				double b = yMin + y * Math.abs(yMax - yMin) / height;
 				double escapeSpeed;
 				if (mandelbrot)
 					escapeSpeed = escapeSpeedMandlebrot(a,b);
