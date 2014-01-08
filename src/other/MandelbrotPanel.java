@@ -30,17 +30,18 @@ import javax.swing.JTextField;
 public class MandelbrotPanel extends JPanel implements MouseMotionListener, MouseListener, KeyListener, MouseWheelListener{
 	private static final long serialVersionUID = 1L;
 	public int width, height;
-	public double xMin = -1;
-	public double xMax = 1.5;
+	public double xMin = -2;
+	public double xMax = .5;
 	public double yMin = -1;
 	public double yMax = 1;
 	public BufferedImage image;
 	public int pixels[];
 	public double iters[];
-	public int maxIterations = 10;
+	public int maxIterations = 100;
 	public int iterations;
 	public double juliaA = 1.3, juliaB = .73;
 	public Color color1, color2, color3;
+	public boolean mandelbrot;
 	
 	//Mouse event variables
 	int mouseXStart, mouseYStart, mouseXEnd, mouseYEnd;
@@ -49,9 +50,10 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 	boolean draggingMouse = false;
 	ConstantsFrame of;
 	
-	public MandelbrotPanel(int width, int height) {
+	public MandelbrotPanel(int width, int height, boolean mandelbrot) {
 		this.width = width;
 		this.height = height;
+		this.mandelbrot = mandelbrot;
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		pixels = new int[width * height];
 		iters = new double[width * height];
@@ -59,12 +61,26 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 		this.addMouseMotionListener(this);
 		this.addMouseWheelListener(this);
 		addKeyListener(this);
-		of = new ConstantsFrame();
-		of.setVisible(true);
-		color1 = new Color(55, 89, 180);
-		color2 = new Color(155, 189, 10);
+		if (!mandelbrot) {
+			of = new ConstantsFrame();
+			of.setVisible(true);
+		}
+		color1 = new Color(200, 0, 0);
+		color2 = new Color(0, 0, 0);
 		color3 = new Color(0,0,0);
 		generateImage();
+	}
+	
+	public void resize(int width, int height) {
+		int oldw = this.width;
+		int oldh = this.height;
+		this.width = width;
+		this.height = height;
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		pixels = new int[width * height];
+		iters = new double[width * height];
+		xMax += (width-oldw)/(float)width;
+		System.out.println(xMax);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -107,7 +123,11 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 				
 				double a = xMin + x * (xMax - xMin) / width;
 				double b = yMin + y * (yMax - yMin) / height;
-				double escapeSpeed = escapeSpeedJulia(a,b);
+				double escapeSpeed;
+				if (mandelbrot)
+					escapeSpeed = escapeSpeedMandlebrot(a,b);
+				else 
+					escapeSpeed = escapeSpeedJulia(a, b);
 				if (escapeSpeed > highestEscape) highestEscape = escapeSpeed;
 				if (iterations == maxIterations) {
 //					int num = (int)(escapeSpeed* 255);
@@ -141,8 +161,10 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 				iters[x + y * width] = escapeSpeed;
 			}
 		}
-		of.juliaABox.setText("" + juliaA);
-		of.juliaBBox.setText("" + juliaB);
+		if (!mandelbrot) {
+			of.juliaABox.setText("" + juliaA);
+			of.juliaBBox.setText("" + juliaB);
+		}
 		repaint();
 	}
 	
