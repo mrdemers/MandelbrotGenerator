@@ -60,7 +60,7 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addMouseWheelListener(this);
-		addKeyListener(this);
+		this.addKeyListener(this);
 		if (!mandelbrot) {
 			of = new ConstantsFrame();
 			of.setVisible(true);
@@ -68,6 +68,8 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 		color1 = new Color(200, 0, 0);
 		color2 = new Color(0, 0, 0);
 		color3 = new Color(0,0,0);
+		this.setFocusable(true);
+		this.requestFocusInWindow();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -100,6 +102,7 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 	}
 	
 	public void generateImage() {
+		this.requestFocus();
 		//System.out.println(maxIterations);
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = 0xffffffff;
@@ -209,37 +212,31 @@ public class MandelbrotPanel extends JPanel implements MouseMotionListener, Mous
 
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			double xCenter = xMin + e.getX() * (xMax - xMin) / width;
-			double yCenter = yMin + e.getY() * (yMax - yMin) / height;
-			double zoomAmount = Math.abs(1.2 * xMin);
-			xMin -= zoomAmount;
-			xMax += zoomAmount;
-			yMin -= zoomAmount;
-			yMax += zoomAmount;
-			double distX = xMax - xMin;
-			double distY = yMax - yMin;
-			xMin = xCenter - distX/2;
-			xMax = xCenter + distX/2;
-			yMin = yCenter - distY/2;
-			yMax = yCenter + distY/2;
+			double xCenter = xMin  + e.getX() * Math.abs(xMax - xMin) / width;
+			double yCenter = yMin  + e.getY() * Math.abs(yMax - yMin) / height;
+			double xDist = Math.abs(xMax - xMin);
+			double yDist = Math.abs(yMax - yMin);
+			xDist = xDist + .5 * xDist;
+			yDist = yDist + .5 * yDist;
+			xMin = xCenter - xDist/2;
+			xMax = xCenter + xDist/2;
+			yMin = yCenter - yDist/2;
+			yMax = yCenter + yDist/2;
 			generateImage();
 		}
-//		if (e.getButton() == MouseEvent.BUTTON1){
-//			double xCenter = xMin + e.getX() * (xMax - xMin) / width;
-//			double yCenter = yMin + e.getY() * (yMax - yMin) / height;
-//			double zoomAmount = Math.abs(.2 * xMin);
-//			xMin += zoomAmount;
-//			xMax -= zoomAmount;
-//			yMin += zoomAmount;
-//			yMax -= zoomAmount;
-//			double distX = xMax - xMin;
-//			double distY = yMax - yMin;
-//			xMin = xCenter - distX/2;
-//			xMax = xCenter + distX/2;
-//			yMin = yCenter - distY/2;
-//			yMax = yCenter + distY/2;
-//			generateImage();
-//		}
+		if (e.getButton() == MouseEvent.BUTTON1){
+			double xCenter = xMin + e.getX() * Math.abs(xMax - xMin) / width;
+			double yCenter = yMin + e.getY() * Math.abs(yMax - yMin) / height;
+			double xDist = Math.abs(xMax - xMin);
+			double yDist = Math.abs(yMax - yMin);
+			xDist = xDist - xDist/4;
+			yDist = yDist - yDist/4;
+			xMin = xCenter - xDist/2;
+			xMax = xCenter + xDist/2;
+			yMin = yCenter - yDist/2;
+			yMax = yCenter + yDist/2;
+			generateImage();
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) {

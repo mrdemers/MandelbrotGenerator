@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-public class Mandelbrot extends JFrame implements KeyListener{
+public class Mandelbrot extends JFrame{
 	private static final long serialVersionUID = 1L;
 	public static int width = 1920/2;
 	public static int height = 1080/2;
@@ -26,22 +26,17 @@ public class Mandelbrot extends JFrame implements KeyListener{
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.white);
-		addKeyListener(this);
 		panel = new MandelbrotPanel(width, height, mandelbrot);
 		panel.generateImage();
 		getContentPane().add(panel, BorderLayout.CENTER);
+		this.setFocusable(false);
 		listener = new ComponentListener() {
-
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
@@ -74,8 +69,6 @@ public class Mandelbrot extends JFrame implements KeyListener{
 
 			@Override
 			public void componentShown(ComponentEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 			
 		};
@@ -85,23 +78,5 @@ public class Mandelbrot extends JFrame implements KeyListener{
 	public static void main(String args[]) {
 		Mandelbrot m = new Mandelbrot();
 		m.setVisible(true);
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		panel.keyPressed(e);
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }
