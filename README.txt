@@ -1,7 +1,5 @@
 A java applet to view the mandelbrot set
 
-At the moment it shows the Julia set because I was messing with it
-
 Use Enter to change the number of iterations, Drag the cursor to zoom
 Use the second window to change the parameters for the set
 

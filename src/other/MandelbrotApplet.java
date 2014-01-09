@@ -19,10 +19,12 @@ public class MandelbrotApplet extends Applet implements KeyListener {
 	JTextField iterationsText;
 	JButton update;
 	public void init() {
+		int sizeW = Integer.parseInt(getParameter("AppWidth"));
+		int sizeH = Integer.parseInt(getParameter("AppHeight"));
 		JPanel mainPanel = new JPanel(new BorderLayout());
-		panel = new MandelbrotPanel(800, 600, true);
+		panel = new MandelbrotPanel(sizeW, sizeH, true);
 		panel.generateImage();
-		
+		System.out.println("Width and Height " + sizeW + " " + sizeH);
 		JLabel iterations = new JLabel("Iterations:");
 		iterationsText = new JTextField();
 		update = new JButton("Update");
